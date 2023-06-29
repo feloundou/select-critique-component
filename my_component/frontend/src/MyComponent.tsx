@@ -14,6 +14,7 @@ type ChoicePairProps = {
   index: number;
   content: string[];
   updateTree: (level: number, index: number, textInput: string) => void;
+  sliceTree: (leafLevel: number) => void;
 };
 
 const ChoicePair: React.FC<ChoicePairProps> = ({
@@ -21,6 +22,7 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
   index,
   content,
   updateTree,
+  sliceTree,
 }) => {
   const [clicked, setClicked] = useState<boolean[]>([false, false]);
   const [textInput, setTextInput] = useState<string>('');
@@ -28,6 +30,7 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
   const handleClick = (btnIndex: number) => {
     const newClickedState = clicked.map((c, i) => i === btnIndex);
     setClicked(newClickedState);
+    sliceTree(level + 1);
     setTextInput('');
   };
 
@@ -149,6 +152,10 @@ class MyComponent extends StreamlitComponentBase<MyComponentState> {
     };
   }
 
+  sliceTree = (leafLevel: number) => {
+    this.setState({tree: this.state.tree.slice(0, leafLevel)});
+  }
+
   updateTree = (level: number, index: number, textInput: string) => {
     const tree = JSON.parse(JSON.stringify(this.state.tree)) as Node[];
 
@@ -203,6 +210,7 @@ class MyComponent extends StreamlitComponentBase<MyComponentState> {
                   index={node.index}
                   content={node.content}
                   updateTree={this.updateTree}
+                  sliceTree={this.sliceTree}
                 />
                 {index < tree.length - 1 && <hr />}
               </div>
