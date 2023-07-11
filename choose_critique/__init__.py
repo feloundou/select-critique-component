@@ -1,3 +1,4 @@
+
 import os
 import streamlit.components.v1 as components
 import streamlit as st
@@ -15,12 +16,15 @@ else:
     build_dir = os.path.join(parent_dir, "frontend/build")
     _component_func = components.declare_component("choose_critique", path=build_dir)
 
+# openai.api_key = ""
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 model = "gpt-3.5-turbo"
 temperature = 1
 steered_system_message = "You are a chatbot, answering user questions in the most helpful way possible. You're great at using feedback to improve responses to the original prompt. Here's a summary of interactions you have had so far."
 
+# if "model_response_str" not in st.session_state:
+#     st.session_state.model_response_str = 0
 if "critique_clicked" not in st.session_state:
     st.session_state.critique_clicked = False
 if "ai_responses" not in st.session_state:
@@ -131,7 +135,25 @@ def accumulate_formatted_text(data, prompt):
 async def run_make_chat_requests(
     prompt, steered_system_message, level, tree_index, selectedOption
 ):
+    # print("this is console from run_make_chat_requests >>>>>>",prompt,level, tree_index)
     responses = make_chat_requests(prompt, steered_system_message)
+    # if tree_index < len(st.session_state.tree):
+    #     print("hello >>>>>>>")
+    #     tree[tree_index] = {
+    #         "level": level,
+    #         "index": index,
+    #         "content": ["hi there is one ", "this is 2"],
+    #         'selectedOption': selectedOption,
+    #         'critique': "",
+    #         'responseRatings': responseRatings,
+    #         "children": [],
+    #     }
+
+    # newTrees = tree[:tree_index+1]
+    # print("this is new trees >>>>",newTrees)
+    # st.session_state.tree = newTrees
+
+    # else:
     tree.append(
         {
             "level": level,
@@ -143,6 +165,7 @@ async def run_make_chat_requests(
         }
     )
     st.session_state.tree = tree
+
 
 if not _RELEASE:
     st.set_page_config(layout="wide")
@@ -171,6 +194,10 @@ if not _RELEASE:
                     tree_index,
                     selectedOption,
                 )
+            )
+            print(
+                "this is console 1 >>>>>>>",
+                accumulate_formatted_text(filtered_responses, response["prompt"]),
             )
 
             st.experimental_rerun()
