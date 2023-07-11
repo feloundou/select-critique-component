@@ -13,7 +13,7 @@ if not _RELEASE:
 else:
     parent_dir = os.path.dirname(os.path.abspath(__file__))
     build_dir = os.path.join(parent_dir, "frontend/build")
-    _component_func = components.declare_component("my_component", path=build_dir)
+    _component_func = components.declare_component("choose_critique", path=build_dir)
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -37,7 +37,7 @@ prompt = st.session_state.prompt
 tree = st.session_state.tree
 
 
-def my_component(
+def choose_critique(
     critique_clicked=None,
     ai_response=None,
     ai_responses=None,
@@ -147,7 +147,7 @@ async def run_make_chat_requests(
 if not _RELEASE:
     st.set_page_config(layout="wide")
 
-    response = my_component(tree=tree, prompt=prompt)
+    response = choose_critique(tree=tree, prompt=prompt)
 
     if response:
         print(response)
@@ -172,10 +172,6 @@ if not _RELEASE:
                     selectedOption,
                 )
             )
-            # print(
-            #     "this is console 1 >>>>>>>",
-            #     accumulate_formatted_text(filtered_responses, response["prompt"]),
-            # )
 
             st.experimental_rerun()
         else:

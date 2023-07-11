@@ -331,5 +331,5 @@ const MyComponent: React.FC<any> = () => {
   )
 }
 
-// export default MyComponent
-export default withStreamlitConnection(MyComponent);
+export default MyComponent
+// export default withStreamlitConnection(MyComponent);
