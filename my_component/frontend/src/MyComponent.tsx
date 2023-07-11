@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react"
-import { Streamlit, withStreamlitConnection } from "streamlit-component-lib"
-import { useRenderData } from "streamlit-component-lib-react-hooks"
-import { isEqual } from "lodash"
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Streamlit, withStreamlitConnection } from 'streamlit-component-lib';
+import { useRenderData } from 'streamlit-component-lib-react-hooks';
 
 const customContainer = {
   width: "100%",
@@ -102,13 +102,12 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
                 )
                 handleSelectedOptionChange(btnIndex + 1)
               }}
-              className={`btn btn-${
-                selectedOption === btnIndex + 1 ? "secondary" : "primary"
-              } my-1`}
+              className={`btn btn-${selectedOption === btnIndex + 1 ? "secondary" : "primary"
+                } my-1`}
               style={{
                 marginBottom: "1.5rem",
                 whiteSpace: "normal",
-                maxWidth: "25rem",
+                maxWidth: "50rem",
               }}
             >
               {btnContent}
@@ -145,12 +144,12 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
             {selectedOption === btnIndex + 1 && (
               <div
                 className="input-group mb-3"
-                style={{ marginTop: "1rem", width: "200px" }}
+                style={{ marginTop: "1rem", width: "400px" }}
               >
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Enter your commentary"
+                  placeholder="Enter your critique"
                   value={textInput}
                   onChange={handleTextInputChange}
                 />
@@ -190,9 +189,18 @@ interface MyComponentProps {
 }
 
 const MyComponent: React.FC<any> = () => {
+  // const MyComponent: React.FC<any> = (props) => {
   const renderData = useRenderData()
+  const theme = renderData.theme;
   const [tree, setTree] = useState<Node[]>([])
   const [prompt, setPrompt] = useState<string>("what is sky color ?")
+
+  const backgroundColor = theme?.backgroundColor || "#f7f7f7";
+
+  const resetStyle = {
+    margin: 0,
+    padding: 0,
+  };
 
   const sliceTree = (leafLevel: number) => {
     setTree((prevTree) => prevTree.slice(0, leafLevel))
@@ -264,52 +272,64 @@ const MyComponent: React.FC<any> = () => {
   }
 
   return (
-    <div className="container" style={customContainer}>
+    <div style={resetStyle}>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "2rem",
+          backgroundColor: backgroundColor,
+          // minHeight: "100%",
+          minHeight: "100vh",
+          minWidth: "100%",
         }}
       >
-        <div>
-          <input
+        <div className="container" style={customContainer}>
+          <div
             style={{
-              backgroundColor: "#007bff",
-              border: "1px solid #007bff",
-              borderRadius: "4px",
-              color: "white",
-              padding: "0.5rem 1rem",
-              margin: "1rem",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "2rem",
             }}
-            type="text"
-            onChange={handleOnPromptChange}
-            value={prompt}
-          />
-          <button onClick={handleOnSearch}>search</button>
-        </div>
-
-        <div>
-          {tree.map((node, index) => (
-            <div key={index}>
-              <ChoicePair
-                level={node.level}
-                content={node.content}
-                updateTree={updateTree}
-                sliceTree={sliceTree}
-                selectedOption={node.selectedOption}
-                treeIndex={index}
-                handleOptionClick={handleClick}
-                args={renderData.args}
+          >
+            <div>
+              <input
+                style={{
+                  backgroundColor: "#007bff",
+                  border: "1px solid #007bff",
+                  borderRadius: "4px",
+                  color: "white",
+                  padding: "0.5rem 1rem",
+                  margin: "1rem",
+                }}
+                type="text"
+                onChange={handleOnPromptChange}
+                value={prompt}
               />
-              {index < tree.length - 1 && <hr />}
+              <button onClick={handleOnSearch}>search</button>
             </div>
-          ))}
+
+            <div>
+              {tree.map((node, index) => (
+                <div key={index}>
+                  <ChoicePair
+                    level={node.level}
+                    content={node.content}
+                    updateTree={updateTree}
+                    sliceTree={sliceTree}
+                    selectedOption={node.selectedOption}
+                    treeIndex={index}
+                    handleOptionClick={handleClick}
+                    args={renderData.args}
+                  />
+                  {index < tree.length - 1 && <hr />}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default MyComponent
+// export default MyComponent
+export default withStreamlitConnection(MyComponent);
