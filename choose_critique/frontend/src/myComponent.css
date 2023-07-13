@@ -1,0 +1,16 @@
+.responseBtn {
+  margin-bottom: 1.5rem;
+  white-space: normal;
+  max-width: 40vw;
+  min-width: 40vw;
+  min-height: 100px;
+  background: #007965;
+  border: 1px solid #007965;
+}
+
+
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}

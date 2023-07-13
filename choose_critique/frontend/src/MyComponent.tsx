@@ -1,7 +1,7 @@
-import { isEqual } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Streamlit, withStreamlitConnection } from 'streamlit-component-lib';
-import { useRenderData } from 'streamlit-component-lib-react-hooks';
+import React, { useEffect, useState } from "react"
+import { Streamlit } from "streamlit-component-lib"
+import { useRenderData } from "streamlit-component-lib-react-hooks"
+import "./myComponent.css"
 
 const customContainer = {
   width: "100%",
@@ -11,12 +11,9 @@ const customContainer = {
 
 type ChoicePairProps = {
   level: number
-  // index: number
   content: string[]
   selectedOption: number
   treeIndex: number
-  // setResponseRatings: any
-  // responseRatings: number
   handleOptionClick: (
     treeindex: number,
     btnIndex: number,
@@ -31,31 +28,25 @@ type ChoicePairProps = {
     responseRatings: number
   ) => void
   sliceTree: (leafLevel: number) => void
-  // setAIResponse: () => void
   args: any
 }
 
 const ChoicePair: React.FC<ChoicePairProps> = ({
   level,
-  // index,
   content,
   treeIndex,
   updateTree,
   selectedOption,
   handleOptionClick,
-  // setResponseRatings,
-  // responseRatings,
   args,
 }) => {
   const [textInput, setTextInput] = useState<string>("")
-  const [selectedOption1, setSelectedOption1] = useState<number>(0)
   const [responseRatings, setResponseRatings] = useState(1)
 
   useEffect(() => {
     if (args.tree.length > 0) {
       setTextInput(args.tree[treeIndex]?.critique)
       setResponseRatings(args.tree[treeIndex]?.responseRatings)
-      // setSelectedOption1(selectedOption)
     }
   }, [])
 
@@ -67,14 +58,9 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
     setResponseRatings(+e.target.value)
   }
 
-  const handleSelectedOptionChange = (btnIndex: number) => {
-    setSelectedOption1(+btnIndex)
-  }
-
   const handleOptionReset = () => {
     setTextInput("")
     setResponseRatings(1)
-    setSelectedOption1(0)
   }
   const handleButtonClick = () => {
     updateTree(treeIndex, level, textInput, selectedOption, responseRatings)
@@ -100,22 +86,12 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
                   level,
                   handleOptionReset
                 )
-                handleSelectedOptionChange(btnIndex + 1)
               }}
-              className={`btn btn-${selectedOption === btnIndex + 1 ? "secondary" : "primary"
-                } my-1`}
-              style={{
-                marginBottom: "1.5rem",
-                whiteSpace: "normal",
-                maxWidth: "50rem",
-              }}
+              className={`btn btn-${
+                selectedOption === btnIndex + 1 ? "secondary" : "primary"
+              } my-1 responseBtn`}
             >
               {btnContent}
-              {/* {btnIndex === 1 && level === 1 && args && args.ai_response
-                ? `Level ${level + 1}, Index ${index * 2 + 1} response: ${
-                    args.ai_response
-                  }`
-                : btnContent} */}
             </button>
             <div
               style={{
@@ -189,18 +165,17 @@ interface MyComponentProps {
 }
 
 const MyComponent: React.FC<any> = () => {
-  // const MyComponent: React.FC<any> = (props) => {
   const renderData = useRenderData()
-  const theme = renderData.theme;
+  // const theme = renderData.theme
   const [tree, setTree] = useState<Node[]>([])
-  const [prompt, setPrompt] = useState<string>("what is sky color ?")
+  const [prompt, setPrompt] = useState<string>()
 
-  const backgroundColor = theme?.backgroundColor || "#f7f7f7";
+  // const backgroundColor = theme?.backgroundColor || "#f7f7f7"
 
   const resetStyle = {
     margin: 0,
     padding: 0,
-  };
+  }
 
   const sliceTree = (leafLevel: number) => {
     setTree((prevTree) => prevTree.slice(0, leafLevel))
@@ -256,74 +231,64 @@ const MyComponent: React.FC<any> = () => {
   useEffect(() => {
     if (renderData.args.tree) setTree(renderData.args.tree)
     if (renderData.args.prompt) setPrompt(renderData.args.prompt)
-    // if (renderData.args.ai_responses) setPrompt(renderData.args.ai_responses)
   }, [renderData.args])
 
-  console.log(tree)
+  console.log("this is tree >>>>>>", tree)
 
   const handleOnSearch = () => {
     Streamlit.setComponentValue({
       prompt,
       tree,
       treeIndex: 0,
-      // responseRatings,
       selectedOption: 0,
     })
   }
 
   return (
     <div style={resetStyle}>
-      <div
-        style={{
-          backgroundColor: backgroundColor,
-          // minHeight: "100%",
-          minHeight: "100vh",
-          minWidth: "100%",
-        }}
-      >
-        <div className="container" style={customContainer}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: "2rem",
-            }}
-          >
-            <div>
-              <input
-                style={{
-                  backgroundColor: "#007bff",
-                  border: "1px solid #007bff",
-                  borderRadius: "4px",
-                  color: "white",
-                  padding: "0.5rem 1rem",
-                  margin: "1rem",
-                }}
-                type="text"
-                onChange={handleOnPromptChange}
-                value={prompt}
-              />
-              <button onClick={handleOnSearch}>search</button>
-            </div>
+      <div className="container" style={customContainer}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "2rem",
+          }}
+        >
+          <div>
+            <input
+              style={{
+                backgroundColor: "#007bff",
+                border: "1px solid #007bff",
+                borderRadius: "4px",
+                color: "white",
+                padding: "0.5rem 1rem",
+                margin: "1rem",
+              }}
+              type="text"
+              onChange={handleOnPromptChange}
+              value={prompt}
+              disabled
+            />
+            {/* <button onClick={handleOnSearch}>search</button> */}
+          </div>
 
-            <div>
-              {tree.map((node, index) => (
-                <div key={index}>
-                  <ChoicePair
-                    level={node.level}
-                    content={node.content}
-                    updateTree={updateTree}
-                    sliceTree={sliceTree}
-                    selectedOption={node.selectedOption}
-                    treeIndex={index}
-                    handleOptionClick={handleClick}
-                    args={renderData.args}
-                  />
-                  {index < tree.length - 1 && <hr />}
-                </div>
-              ))}
-            </div>
+          <div>
+            {tree.map((node, index) => (
+              <div key={index}>
+                <ChoicePair
+                  level={node.level}
+                  content={node.content}
+                  updateTree={updateTree}
+                  sliceTree={sliceTree}
+                  selectedOption={node.selectedOption}
+                  treeIndex={index}
+                  handleOptionClick={handleClick}
+                  args={renderData.args}
+                />
+                {index < tree.length - 1 && <hr />}
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import streamlit.components.v1 as components
 import streamlit as st
 import openai
 import asyncio
+import time
 
 _RELEASE = False
 
@@ -16,8 +17,7 @@ else:
     build_dir = os.path.join(parent_dir, "frontend/build")
     _component_func = components.declare_component("choose_critique", path=build_dir)
 
-# openai.api_key = ""
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = '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'
 
 model = "gpt-3.5-turbo"
 temperature = 1
@@ -32,9 +32,11 @@ if "ai_responses" not in st.session_state:
 if "ai_response" not in st.session_state:
     st.session_state.ai_response = ""
 if "prompt" not in st.session_state:
-    st.session_state.prompt = ""
+    st.session_state.prompt = "what is sky color ?"
 if "tree" not in st.session_state:
-    st.session_state.tree = []
+    st.session_state.tree = [
+        
+    ]
 
 # model_response_str = st.session_state.model_response_str
 prompt = st.session_state.prompt
@@ -166,26 +168,44 @@ async def run_make_chat_requests(
     )
     st.session_state.tree = tree
 
+@st.cache_data(show_spinner=False)
+def make_api_request():
+    asyncio.run(
+        run_make_chat_requests(
+            prompt,
+            accumulate_formatted_text([],prompt),
+            0,
+            0,
+            0,
+        )
+    )
+    time.sleep(30) 
+
+# make_api_request.clear()
 
 if not _RELEASE:
     st.set_page_config(layout="wide")
-
+    print(accumulate_formatted_text([],prompt))
+    make_api_request()
     response = choose_critique(tree=tree, prompt=prompt)
 
     if response:
         print(response)
         tree_index = response["treeIndex"]
-        # responseRatings = response['responseRatings']
         selectedOption = response["selectedOption"]
         tree = response["tree"]
 
-        if "prompt" in response:
-            st.session_state.prompt = response["prompt"]
-            filtered_responses = list(
+        print(st.session_state.tree)
+
+        filtered_responses = list(
                 filter(
                     lambda response: response["selectedOption"] != 0, response["tree"]
                 )
             )
+
+        if "prompt" in response:
+            st.session_state.prompt = response["prompt"]
+          
             asyncio.run(
                 run_make_chat_requests(
                     response["prompt"],
@@ -202,11 +222,7 @@ if not _RELEASE:
 
             st.experimental_rerun()
         else:
-            filtered_responses = list(
-                filter(
-                    lambda response: response["selectedOption"] != 0, response["tree"]
-                )
-            )
+         
             print(
                 "this is console 2 >>>>>>>",
                 accumulate_formatted_text(filtered_responses, None),
