@@ -2,7 +2,11 @@ import setuptools
 
 setuptools.setup(
     name="choose_critique",
+<<<<<<< HEAD
     version="0.0.1",
+=======
+    version="0.0.2",
+>>>>>>> 64bb592a (newest complete component)
     author="",
     author_email="",
     description="",

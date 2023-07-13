@@ -17,7 +17,8 @@ else:
     build_dir = os.path.join(parent_dir, "frontend/build")
     _component_func = components.declare_component("choose_critique", path=build_dir)
 
-openai.api_key = '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'
+# openai.api_key = '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'
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 model = "gpt-3.5-turbo"
 temperature = 1
@@ -32,7 +33,7 @@ if "ai_responses" not in st.session_state:
 if "ai_response" not in st.session_state:
     st.session_state.ai_response = ""
 if "prompt" not in st.session_state:
-    st.session_state.prompt = "what is sky color ?"
+    st.session_state.prompt = "why is the sky blue?"
 if "tree" not in st.session_state:
     st.session_state.tree = [
         

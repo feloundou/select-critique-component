@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react"
-import { Streamlit } from "streamlit-component-lib"
-import { useRenderData } from "streamlit-component-lib-react-hooks"
-import "./myComponent.css"
+import './myComponent.css';
+
+import React, { useEffect, useState } from 'react';
+import { Streamlit } from 'streamlit-component-lib';
+import { useRenderData } from 'streamlit-component-lib-react-hooks';
 
 const customContainer = {
   width: "100%",
@@ -87,9 +88,8 @@ const ChoicePair: React.FC<ChoicePairProps> = ({
                   handleOptionReset
                 )
               }}
-              className={`btn btn-${
-                selectedOption === btnIndex + 1 ? "secondary" : "primary"
-              } my-1 responseBtn`}
+              className={`btn btn-${selectedOption === btnIndex + 1 ? "secondary" : "primary"
+                } my-1 responseBtn`}
             >
               {btnContent}
             </button>
