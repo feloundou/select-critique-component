@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name="streamlit-custom-component",
+    name="choose_critique",
     version="0.0.1",
     author="",
     author_email="",
@@ -14,9 +14,7 @@ setuptools.setup(
     classifiers=[],
     python_requires=">=3.6",
     install_requires=[
-        # By definition, a Custom Component depends on Streamlit.
-        # If your component has other Python dependencies, list
-        # them here.
+
         "streamlit >= 0.63",
     ],
 )
